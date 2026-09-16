@@ -3,19 +3,66 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>каталог рецептів напоїв</title>
+    <title>Каталог рецептів напоїв</title>
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
-    <!-- Шапка з навігацією та пошуком -->
+    <header>
+      <h1>Каталог рецептів напоїв</h1>
+      <nav>
+        <a href="#hot-drinks">Гарячі напої</a>
+        <a href="#cold-drinks">Холодні напої</a>
+        <a href="#cocktails">Коктейлі</a>
+      </nav>
+    </header>
 
-    <!-- Блок фільтра за типом напою -->
+    <main>
+      <section id="filter">
+        <h2>Фільтр рецептів</h2>
+        <form>
+          <label for="drink-search">Пошук за інгредієнтом:</label>
+          <input
+            type="text"
+            id="drink-search"
+            name="drink-search"
+            placeholder="Наприклад: м'ята"
+          />
+        </form>
+      </section>
 
-    <!-- Список карток рецептів -->
+      <section id="recipes">
+        <h2>Популярні рецепти</h2>
 
-    <!-- Блок деталей обраного рецепта (інгредієнти, кроки) -->
+        <article>
+          <h3>Латте Макіато</h3>
+          <img
+            src="assets/img/latte.svg"
+            alt="Склянка кави Латте з густою пінкою"
+          />
+          <p>Класичний кавовий напій на основі еспресо та молока.</p>
+        </article>
 
-    <!-- Підвал -->
+        <article>
+          <h3>Мохіто безалкогольний</h3>
+          <img
+            src="assets/img/mojito.svg"
+            alt="Освіжаючий напій з м'ятою та лаймом"
+          />
+          <p>Ідеальний літній коктейль із льодом.</p>
+        </article>
+      </section>
+
+      <aside id="recipe-details">
+        <h2>Деталі обраного рецепта</h2>
+        <p>
+          Натисніть на рецепт, щоб побачити інгредієнти та кроки приготування.
+        </p>
+      </aside>
+    </main>
+
+    <footer>
+      <p>&copy; 2026 Марія Носаль. Навчальний проєкт (Варіант 15).</p>
+    </footer>
 
     <script src="js/app.js"></script>
   </body>
