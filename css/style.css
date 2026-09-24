@@ -59,7 +59,7 @@ form {
   background-color: white;
 }
 
-article {
+.recipe-card {
   background-color: white;
   border-radius: 10px;
   margin-bottom: 20px;
@@ -68,21 +68,21 @@ article {
   border: 1px solid #eee;
 }
 
-article:hover {
+.recipe-card:hover {
   box-shadow: 0 8px 16px rgba(255, 122, 0, 0.3);
 }
 
-article img {
+.recipe-card img {
   width: 100%;
   display: block;
 }
 
-article h3,
-article p {
+.recipe-card h3,
+.recipe-card p {
   padding: 0 16px;
 }
 
-article p {
+.recipe-card p {
   padding-bottom: 16px;
 }
 
