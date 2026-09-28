@@ -16,41 +16,37 @@
       </nav>
     </header>
 
-    <main>
-      <section id="filter">
-        <h2>Фільтр рецептів</h2>
-        <form>
-          <label for="drink-search">Пошук за інгредієнтом:</label>
-          <input
-            type="text"
-            id="drink-search"
-            name="drink-search"
-            placeholder="Наприклад: м'ята"
-          />
-        </form>
-      </section>
+    <div class="layout-container">
+      <main>
+        <section id="filter">
+          <h2>Фільтр рецептів</h2>
+          <form>
+            <label for="drink-search">Пошук за інгредієнтом:</label>
+            <input
+              type="text"
+              id="drink-search"
+              placeholder="Наприклад: м'ята"
+            />
+          </form>
+        </section>
 
-      <section id="recipes">
-        <h2>Популярні рецепти</h2>
+        <section id="recipes">
+          <h2>Популярні рецепти</h2>
+          <div class="cards">
+            <article class="recipe-card">
+              <h3>Латте Макіато</h3>
+              <img src="assets/img/latte.jpg" alt="Склянка кави Латте" />
+              <p>Класичний кавовий напій на основі еспресо та молока.</p>
+            </article>
 
-        <article class="recipe-card">
-          <h3>Латте Макіато</h3>
-          <img
-            src="assets/img/latte.svg"
-            alt="Склянка кави Латте з густою пінкою"
-          />
-          <p>Класичний кавовий напій на основі еспресо та молока.</p>
-        </article>
-
-        <article class="recipe-card">
-          <h3>Мохіто безалкогольний</h3>
-          <img
-            src="assets/img/mojito.svg"
-            alt="Освіжаючий напій з м'ятою та лаймом"
-          />
-          <p>Ідеальний літній коктейль із льодом.</p>
-        </article>
-      </section>
+            <article class="recipe-card">
+              <h3>Мохіто безалкогольний</h3>
+              <img src="assets/img/mojito.jpg" alt="Освіжаючий напій" />
+              <p>Ідеальний літній коктейль із льодом.</p>
+            </article>
+          </div>
+        </section>
+      </main>
 
       <aside id="recipe-details">
         <h2>Деталі обраного рецепта</h2>
@@ -58,12 +54,11 @@
           Натисніть на рецепт, щоб побачити інгредієнти та кроки приготування.
         </p>
       </aside>
-    </main>
+    </div>
 
     <footer>
       <p>&copy; 2026 Марія Носаль. Навчальний проєкт (Варіант 15).</p>
     </footer>
-
     <script src="js/app.js"></script>
   </body>
 </html>
