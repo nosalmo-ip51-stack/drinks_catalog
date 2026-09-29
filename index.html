@@ -8,12 +8,14 @@
   </head>
   <body>
     <header>
-      <h1>Каталог рецептів напоїв</h1>
-      <nav>
-        <a href="#hot-drinks">Гарячі напої</a>
-        <a href="#cold-drinks">Холодні напої</a>
-        <a href="#cocktails">Коктейлі</a>
-      </nav>
+      <div class="header-content">
+        <h1>Каталог рецептів напоїв</h1>
+        <nav>
+          <a href="#hot-drinks">Гарячі напої</a>
+          <a href="#cold-drinks">Холодні напої</a>
+          <a href="#cocktails">Коктейлі</a>
+        </nav>
+      </div>
     </header>
 
     <div class="layout-container">
@@ -34,24 +36,49 @@
           <h2>Популярні рецепти</h2>
           <div class="cards">
             <article class="recipe-card">
-              <h3>Латте Макіато</h3>
-              <img src="assets/img/latte.jpg" alt="Склянка кави Латте" />
-              <p>Класичний кавовий напій на основі еспресо та молока.</p>
+              <div class="card-image">
+                <span class="badge badge-hot">Гарячі напої</span>
+                <img src="assets/img/latte.jpg" alt="Склянка кави Латте" />
+              </div>
+              <div class="card-content">
+                <h3>Латте Макіато</h3>
+                <div class="recipe-meta">
+                  <span>⏱ 15 хв</span>
+                  <span>⭐ Середня</span>
+                </div>
+                <p>
+                  Класичний кавовий напій на основі еспресо та ніжної збитої
+                  молочної пінки.
+                </p>
+              </div>
             </article>
 
             <article class="recipe-card">
-              <h3>Мохіто безалкогольний</h3>
-              <img src="assets/img/mojito.jpg" alt="Освіжаючий напій" />
-              <p>Ідеальний літній коктейль із льодом.</p>
+              <div class="card-image">
+                <span class="badge badge-cold">Коктейлі</span>
+                <img src="assets/img/mojito.jpg" alt="Освіжаючий напій" />
+              </div>
+              <div class="card-content">
+                <h3>Мохіто безалкогольний</h3>
+                <div class="recipe-meta">
+                  <span>⏱ 10 хв</span>
+                  <span>⭐ Легка</span>
+                </div>
+                <p>
+                  Ідеальний літній коктейль із льодом, свіжою м'ятою та соком
+                  лайма.
+                </p>
+              </div>
             </article>
           </div>
         </section>
       </main>
 
       <aside id="recipe-details">
-        <h2>Деталі обраного рецепта</h2>
+        <h2>Деталі рецепта</h2>
         <p>
-          Натисніть на рецепт, щоб побачити інгредієнти та кроки приготування.
+          Натисніть на рецепт, щоб побачити точні пропорції інгредієнтів та
+          покрокові інструкції приготування.
         </p>
       </aside>
     </div>
@@ -59,6 +86,5 @@
     <footer>
       <p>&copy; 2026 Марія Носаль. Навчальний проєкт (Варіант 15).</p>
     </footer>
-    <script src="js/app.js"></script>
   </body>
 </html>
