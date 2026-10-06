@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Каталог рецептів напоїв</title>
     <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="css/style.css" />
     <script src="script.js" defer></script>
   </head>
   <body>
@@ -36,41 +35,13 @@
 
         <section id="recipes">
           <h2>Популярні рецепти</h2>
-          <div class="cards">
-            <article class="recipe-card">
-              <div class="card-image">
-                <span class="badge badge-hot">Гарячі напої</span>
-                <img src="assets/img/latte.jpg" alt="Склянка кави Латте" />
-              </div>
-              <div class="card-content">
-                <h3>Латте Макіато</h3>
-                <div class="recipe-meta">
-                  <span>⏱ 15 хв</span>
-                  <span>⭐ Середня</span>
-                </div>
-                <p>
-                  Класичний кавовий напій на основі еспресо та ніжної збитої
-                  молочної пінки.
-                </p>
-              </div>
-            </article>
+          <p id="drinks-count">Кількість безалкогольних рецептів: 0</p>
 
-            <article class="recipe-card">
-              <div class="card-image">
-                <span class="badge badge-cold">Коктейлі</span>
-                <img src="assets/img/mojito.jpg" alt="Освіжаючий напій" />
-              </div>
-              <div class="card-content">
-                <h3>Мохіто безалкогольний</h3>
-                <div class="recipe-meta">
-                  <span>⏱ 10 хв</span>
-                  <span>⭐ Легка</span>
-                </div>
-                <p>
-                  Ідеальний літній коктейль із льодом, свіжою м'ятою та соком
-                  лайма.
-                </p>
-              </div>
+          <div id="drinks-list" class="cards">
+            <!-- Статична заглушка, яка буде видалена через JS -->
+            <article class="recipe-card static-placeholder">
+              <h3>Заглушка</h3>
+              <p>Цей текст має зникнути.</p>
             </article>
           </div>
         </section>
