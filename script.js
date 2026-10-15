@@ -1,4 +1,4 @@
-const recipes = [
+let recipes = [
   {
     name: "Латте Макіато",
     alcohol: false,
@@ -18,7 +18,7 @@ const recipes = [
     badgeClass: "badge-hot",
     difficulty: "Середня",
     description: "Зігріваючий зимовий напій з прянощами для холодних вечорів.",
-    image: "assets/img/glintwein.jpg", // ИСПРАВЛЕНО ТУТ
+    image: "assets/img/glintwein.jpg",
   },
   {
     name: "Мохіто безалкогольний",
@@ -39,22 +39,26 @@ const recipes = [
     badgeClass: "badge-hot",
     difficulty: "Легка",
     description: "Швидкий і освіжаючий чай для бадьорості.",
-    image: "assets/img/tea.jpg", // ИСПРАВЛЕНО ТУТ
+    image: "assets/img/tea.jpg",
   },
 ];
 
 const listContainer = document.querySelector("#drinks-list");
+const form = document.querySelector("#add-recipe-form");
+const timeInput = document.querySelector("#recipe-time");
+const filterCheckbox = document.querySelector("#filter-non-alcoholic");
 
+// Видаляємо статичну заглушку
 const placeholder = document.querySelector(".static-placeholder");
 if (placeholder) {
   placeholder.remove();
 }
 
-function renderDrinks(drinks) {
+function renderDrinks(drinksToRender) {
   listContainer.innerHTML = "";
   let nonAlcoholicCount = 0;
 
-  drinks.forEach((drink) => {
+  drinksToRender.forEach((drink) => {
     const card = document.createElement("article");
     card.classList.add("recipe-card");
     card.dataset.time = drink.timeMinutes;
@@ -68,11 +72,11 @@ function renderDrinks(drinks) {
     imgContainer.classList.add("card-image");
 
     const badge = document.createElement("span");
-    badge.classList.add("badge", drink.badgeClass);
+    badge.classList.add("badge", drink.badgeClass || "badge-hot");
     badge.textContent = drink.type;
 
     const img = document.createElement("img");
-    img.setAttribute("src", drink.image);
+    img.setAttribute("src", drink.image || "assets/img/latte.jpg");
     img.setAttribute("alt", drink.name);
 
     imgContainer.append(badge, img);
@@ -90,12 +94,13 @@ function renderDrinks(drinks) {
     timeSpan.textContent = `⏱ ${drink.timeMinutes} хв`;
 
     const diffSpan = document.createElement("span");
-    diffSpan.textContent = `⭐ ${drink.difficulty}`;
+    diffSpan.textContent = `⭐ ${drink.difficulty || "Легка"}`;
 
     metaContainer.append(timeSpan, diffSpan);
 
     const desc = document.createElement("p");
-    desc.textContent = drink.description;
+    desc.textContent =
+      drink.description || "Свіжоприготований домашній рецепт.";
 
     contentContainer.append(title, metaContainer, desc);
 
@@ -109,4 +114,60 @@ function renderDrinks(drinks) {
   }
 }
 
+// Додаткова валідація часу приготування
+if (timeInput) {
+  timeInput.addEventListener("input", () => {
+    const val = Number(timeInput.value);
+    if (val <= 0) {
+      timeInput.setCustomValidity(
+        "Час приготування має бути більшим за 0 хвилин",
+      );
+    } else {
+      timeInput.setCustomValidity("");
+    }
+  });
+}
+
+// Обробка форми без перезавантаження
+if (form) {
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const nameValue = document.querySelector("#recipe-name").value.trim();
+    const typeValue = document.querySelector("#recipe-type").value;
+    const timeValue = Number(timeInput.value);
+    const alcoholChecked = document.querySelector("#recipe-alcohol").checked;
+
+    const newRecipe = {
+      name: nameValue,
+      alcohol: alcoholChecked,
+      timeMinutes: timeValue,
+      type: typeValue,
+      badgeClass: typeValue === "Коктейлі" ? "badge-cocktail" : "badge-hot",
+      difficulty: "Легка",
+      description: "Новий рецепт, доданий користувачем через форму.",
+      image: "assets/img/latte.jpg",
+    };
+
+    recipes.push(newRecipe);
+    applyFilter();
+    form.reset();
+  });
+}
+
+// Фільтрація списку
+function applyFilter() {
+  if (filterCheckbox && filterCheckbox.checked) {
+    const filtered = recipes.filter((r) => !r.alcohol);
+    renderDrinks(filtered);
+  } else {
+    renderDrinks(recipes);
+  }
+}
+
+if (filterCheckbox) {
+  filterCheckbox.addEventListener("change", applyFilter);
+}
+
+// Початковий рендер сторінки
 renderDrinks(recipes);

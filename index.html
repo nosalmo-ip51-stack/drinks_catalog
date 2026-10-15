@@ -12,9 +12,9 @@
       <div class="header-content">
         <h1>Каталог рецептів напоїв</h1>
         <nav>
-          <a href="#hot-drinks">Гарячі напої</a>
-          <a href="#cold-drinks">Холодні напої</a>
-          <a href="#cocktails">Коктейлі</a>
+          <a href="#">Гарячі напої</a>
+          <a href="#">Холодні напої</a>
+          <a href="#">Коктейлі</a>
         </nav>
       </div>
     </header>
@@ -23,41 +23,104 @@
       <main>
         <section id="filter">
           <h2>Фільтр рецептів</h2>
-          <form>
-            <label for="drink-search">Пошук за інгредієнтом:</label>
-            <input
-              type="text"
-              id="drink-search"
-              placeholder="Наприклад: м'ята"
-            />
-          </form>
+          <p>Пошук за інгредієнтом:</p>
+          <input type="text" placeholder="Наприклад: м'ята" />
         </section>
 
         <section id="recipes">
           <h2>Популярні рецепти</h2>
+
+          <!-- Чекбокс фільтрації (Друга подія варіанта 15) -->
+          <div class="filter-container" style="margin-bottom: 15px">
+            <label>
+              <input type="checkbox" id="filter-non-alcoholic" /> Лише
+              безалкогольні
+            </label>
+          </div>
+
           <p id="drinks-count">Кількість безалкогольних рецептів: 0</p>
 
           <div id="drinks-list" class="cards">
-            <!-- Статична заглушка, яка буде видалена через JS -->
             <article class="recipe-card static-placeholder">
               <h3>Заглушка</h3>
               <p>Цей текст має зникнути.</p>
             </article>
           </div>
+
+          <!-- Форма додавання нового рецепта (Варіант 15) -->
+          <div
+            class="form-container"
+            style="
+              margin-top: 30px;
+              max-width: 500px;
+              background: #fff;
+              padding: 20px;
+              border-radius: 8px;
+              border: 1px solid #ddd;
+            "
+          >
+            <h3>Додати новий рецепт</h3>
+            <form id="add-recipe-form">
+              <div style="margin-bottom: 10px">
+                <label for="recipe-name">Назва рецепта:</label><br />
+                <input
+                  type="text"
+                  id="recipe-name"
+                  name="name"
+                  required
+                  style="width: 100%; padding: 8px; margin-top: 4px"
+                />
+              </div>
+
+              <div style="margin-bottom: 10px">
+                <label for="recipe-type">Тип напою:</label><br />
+                <select
+                  id="recipe-type"
+                  name="type"
+                  style="width: 100%; padding: 8px; margin-top: 4px"
+                >
+                  <option value="Гарячі напої">Гарячі напої</option>
+                  <option value="Коктейлі">Коктейлі</option>
+                  <option value="Холодні напої">Холодні напої</option>
+                </select>
+              </div>
+
+              <div style="margin-bottom: 10px">
+                <label for="recipe-time">Час приготування (хв):</label><br />
+                <input
+                  type="number"
+                  id="recipe-time"
+                  name="timeMinutes"
+                  min="1"
+                  required
+                  style="width: 100%; padding: 8px; margin-top: 4px"
+                />
+              </div>
+
+              <div style="margin-bottom: 15px">
+                <label>
+                  <input type="checkbox" id="recipe-alcohol" name="alcohol" />
+                  Містить алкоголь
+                </label>
+              </div>
+
+              <button
+                type="submit"
+                style="
+                  padding: 10px 20px;
+                  background: #8b0000;
+                  color: white;
+                  border: none;
+                  border-radius: 4px;
+                  cursor: pointer;
+                "
+              >
+                Додати рецепт
+              </button>
+            </form>
+          </div>
         </section>
       </main>
-
-      <aside id="recipe-details">
-        <h2>Деталі рецепта</h2>
-        <p>
-          Натисніть на рецепт, щоб побачити точні пропорції інгредієнтів та
-          покрокові інструкції приготування.
-        </p>
-      </aside>
     </div>
-
-    <footer>
-      <p>&copy; 2026 Марія Носаль. Навчальний проєкт (Варіант 15).</p>
-    </footer>
   </body>
 </html>
