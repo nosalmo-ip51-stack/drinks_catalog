@@ -1,133 +1,105 @@
-// Практична робота №9. Варіант 15: Каталог рецептів напоїв (API)
-const API_URL =
-  "https://www.thecocktaildb.com/api/json/v1/1/search.php?s=margarita"; //[cite: 17]
+// Крок 1. Вибір фреймворку: Обрано Vue 3, оскільки його простіше підключити через один тег CDN і він має зручний та інтуїтивно зрозумілий синтаксис шаблонів.
 
-// Отримуємо посилання на елементи DOM
-const listContainer = document.querySelector("#drinks-list");
-const refreshButton = document.querySelector("#refresh-btn");
-const errorContainer = document.querySelector("#error-message");
-const loadingIndicator = document.querySelector("#loading-indicator");
+// Крок 4. Створення окремого компонента DrinkCard
+const DrinkCard = {
+  props: ["name", "type", "timeMinutes", "alcohol", "image"],
 
-// Крок 7. Функція управління станом завантаження
-function showLoading(isLoading) {
-  if (loadingIndicator) {
-    loadingIndicator.style.display = isLoading ? "block" : "none";
-  }
-  if (refreshButton) {
-    refreshButton.disabled = isLoading; // Блокуємо кнопку під час запиту
-  }
-}
+  template: `
+        <article class="recipe-card" :style="{ opacity: alcohol ? 0.9 : 1, border: alcohol ? '1px solid #ffcccc' : '1px solid #ccffcc' }">
+            <div class="card-image">
+                <span class="badge" :class="type === 'Коктейлі' ? 'badge-cocktail' : 'badge-hot'">
+                    {{ type }}
+                </span>
+                <img :src="image" :alt="name" style="width:100%; height: 200px; object-fit: cover; border-radius: 8px 8px 0 0;" />
+            </div>
+            <div class="card-content" style="padding: 15px;">
+                <h3 style="margin-top: 0; margin-bottom: 10px; color: #333;">{{ name }}</h3>
+                <p style="margin: 5px 0; color: #666;">
+                    🕒 Час: <strong>{{ timeMinutes }} хв.</strong>
+                </p>
+                <p style="margin: 5px 0; color: #666;">
+                    🍸 Статус: <strong>{{ alcohol ? 'Містить алкоголь' : 'Безалкогольний' }}</strong>
+                </p>
+            </div>
+        </article>
+    `,
+};
 
-// Крок 8. Виведення повідомлення про помилку
-function showError(message) {
-  if (errorContainer) {
-    errorContainer.textContent = message;
-    errorContainer.style.display = "block";
-  }
-}
+// Створення головного додатку Vue
+const app = Vue.createApp({
+  components: {
+    "drink-card": DrinkCard,
+  },
 
-// Очищення повідомлення про помилку
-function clearError() {
-  if (errorContainer) {
-    errorContainer.textContent = "";
-    errorContainer.style.display = "none";
-  }
-}
+  // Крок 3. Реактивний стан додатку (дані)
+  data() {
+    return {
+      showOnlyNonAlcoholic: false,
 
-// Крок 6. Функція рендеру списку карток (адаптована під поля API TheCocktailDB)
-function renderDrinks(drinks) {
-  if (!listContainer) return;
-  listContainer.innerHTML = "";
+      // Усі 6 напоїв мають унікальні шляхи до зображень
+      drinks: [
+        {
+          id: 1,
+          name: "Латте Макіато",
+          type: "Гарячі напої",
+          timeMinutes: 15,
+          alcohol: false,
+          image: "assets/img/latte.jpg",
+        },
+        {
+          id: 2,
+          name: "Мохіто класичний",
+          type: "Коктейлі",
+          timeMinutes: 10,
+          alcohol: true,
+          image: "assets/img/mojito.jpg",
+        },
+        {
+          id: 3,
+          name: "Експрес-чай з м'ятою",
+          type: "Гарячі напої",
+          timeMinutes: 5,
+          alcohol: false,
+          image: "assets/img/tea.jpg",
+        },
+        {
+          id: 4,
+          name: "Маргарита",
+          type: "Коктейлі",
+          timeMinutes: 7,
+          alcohol: true,
+          image: "assets/img/margarita.jpg",
+        },
+        {
+          id: 5,
+          name: "Безалкогольний Мохіто",
+          type: "Коктейлі",
+          timeMinutes: 10,
+          alcohol: false,
+          image: "assets/img/virgin_mojito.jpg",
+        },
+        {
+          id: 6,
+          name: "Глінтвейн",
+          type: "Гарячі напої",
+          timeMinutes: 20,
+          alcohol: true,
+          image: "assets/img/glintwein.jpg",
+        },
+      ],
+    };
+  },
 
-  drinks.forEach((drink) => {
-    const card = document.createElement("article");
-    card.classList.add("recipe-card");
+  // Крок 6 та 8. Похідні значення
+  computed: {
+    filteredDrinks() {
+      if (this.showOnlyNonAlcoholic) {
+        return this.drinks.filter((drink) => drink.alcohol === false);
+      }
+      return this.drinks;
+    },
+  },
+});
 
-    const imgContainer = document.createElement("div");
-    imgContainer.classList.add("card-image");
-
-    const badge = document.createElement("span");
-    badge.classList.add("badge", "badge-cocktail");
-    badge.textContent = "Коктейль";
-
-    // Беремо картинку з API
-    const img = document.createElement("img");
-    img.setAttribute("src", drink.strDrinkThumb); //[cite: 17]
-    img.setAttribute("alt", drink.strDrink);
-
-    imgContainer.append(badge, img);
-
-    const contentContainer = document.createElement("div");
-    contentContainer.classList.add("card-content");
-
-    // Беремо назву з API
-    const title = document.createElement("h3");
-    title.textContent = drink.strDrink; //[cite: 17]
-
-    const desc = document.createElement("p");
-    // Беремо інструкцію з API та обрізаємо її, щоб картки були акуратними
-    const instructions = drink.strInstructions || "Опис відсутній."; //[cite: 17]
-    desc.textContent =
-      instructions.length > 150
-        ? instructions.substring(0, 150) + "..."
-        : instructions;
-
-    contentContainer.append(title, desc);
-    card.append(imgContainer, contentContainer);
-    listContainer.append(card);
-  });
-}
-
-// Крок 2. Створення async-функції запиту
-async function loadData() {
-  clearError();
-  listContainer.innerHTML = "";
-
-  // Крок 7. Увімкнення видимої ознаки завантаження перед fetch
-  showLoading(true); //[cite: 14]
-
-  try {
-    // Крок 3. Виконати fetch і дочекатися відповіді
-    const response = await fetch(API_URL); //[cite: 13, 14]
-
-    // Крок 4. Перевірити HTTP-статус
-    if (!response.ok) {
-      throw new Error(`Сервер відповів кодом ${response.status}`); //[cite: 14]
-    }
-
-    // Крок 5. Розібрати JSON
-    const data = await response.json(); //[cite: 14]
-    console.log("Отримані дані від API:", data); // Виводимо в консоль для перевірки
-
-    // Крок 6 (Особливість Варіанта 15): Перевірка на відсутність результатів
-    // Якщо коктейлів не знайдено, API повертає об'єкт, де drinks дорівнює null
-    if (!data.drinks) {
-      throw new Error("Рецептів за такою назвою не знайдено"); //[cite: 17]
-    }
-
-    // Вивести дані в DOM
-    renderDrinks(data.drinks);
-  } catch (error) {
-    // Крок 8. Обробити помилку та вивести повідомлення
-    console.error("Деталі помилки для розробника:", error); //[cite: 14]
-
-    // Крок 9. Перевірка сценарію offline (відсутність з'єднання)
-    if (!navigator.onLine || error.message.includes("Failed to fetch")) {
-      showError("Не вдалося завантажити дані. Спробуйте пізніше."); //[cite: 14]
-    } else {
-      // Виведення специфічного тексту помилки (наприклад, коли нічого не знайдено)
-      showError(error.message);
-    }
-  } finally {
-    // Крок 7. Вимкнути ознаку завантаження незалежно від результату
-    showLoading(false); //[cite: 14]
-  }
-}
-
-// Крок 10. Додати кнопку «Оновити»
-if (refreshButton) {
-  refreshButton.addEventListener("click", loadData); //[cite: 15]
-}
-
-// Автоматичний запуск функції при завантаженні сторінки
-loadData();
+// Запуск додатку
+app.mount("#app");

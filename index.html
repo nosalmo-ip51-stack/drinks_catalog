@@ -3,8 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Каталог рецептів напоїв</title>
+    <title>Каталог рецептів напоїв (Vue 3)</title>
     <link rel="stylesheet" href="css/style.css" />
+
+    <!-- Підключення клієнтського фреймворку Vue 3 через CDN -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
     <script src="script.js" defer></script>
   </head>
   <body>
@@ -21,78 +25,65 @@
 
     <div class="layout-container">
       <main>
+        <!-- Блок пошуку -->
         <section id="filter">
           <h2>Фільтр рецептів</h2>
           <p>Пошук за інгредієнтом:</p>
           <input type="text" placeholder="Наприклад: м'ята" />
         </section>
 
-        <section id="recipes">
-          <h2>Популярні рецепти (API TheCocktailDB)</h2>
+        <!-- Кореневий елемент Vue -->
+        <section id="app" class="recipes-section">
+          <h2>Популярні рецепти (Декларативний рендер Vue 3)</h2>
 
-          <!-- Елементи для Практичної роботи №9 (API) -->
-          <button
-            id="refresh-btn"
+          <!-- Чекбокс для фільтрації -->
+          <div
+            class="filter-container"
             style="
               margin-bottom: 20px;
-              padding: 10px 20px;
-              background-color: #8b0000;
-              color: white;
-              border: none;
-              border-radius: 5px;
-              cursor: pointer;
-              font-size: 16px;
-            "
-          >
-            Оновити дані
-          </button>
-
-          <p
-            id="loading-indicator"
-            style="
-              display: none;
-              font-weight: bold;
-              color: #555;
-              margin-bottom: 15px;
-            "
-          >
-            ⏳ Завантаження даних з сервера...
-          </p>
-
-          <p
-            id="error-message"
-            style="
-              display: none;
-              color: #d8000c;
-              background-color: #ffd2d2;
+              background: #fff;
               padding: 15px;
-              border-radius: 5px;
-              border: 1px solid #d8000c;
-              margin-bottom: 15px;
-              font-weight: bold;
+              border-radius: 8px;
+              border: 1px solid #ddd;
+              max-width: 400px;
             "
-          ></p>
-
-          <!-- Елементи з Практичної роботи №8 -->
-          <div class="filter-container" style="margin-bottom: 15px">
-            <label>
-              <input type="checkbox" id="filter-non-alcoholic" /> Лише
-              безалкогольні
+          >
+            <label style="cursor: pointer; font-weight: bold; font-size: 16px">
+              <input
+                type="checkbox"
+                v-model="showOnlyNonAlcoholic"
+                style="transform: scale(1.2); margin-right: 8px"
+              />
+              Лише безалкогольні
             </label>
           </div>
 
-          <p id="drinks-count">Кількість безалкогольних рецептів: 0</p>
+          <p
+            id="drinks-count"
+            style="margin-bottom: 15px; font-weight: bold; color: #555"
+          >
+            Кількість знайдених рецептів: {{ filteredDrinks.length }}
+          </p>
 
-          <!-- Контейнер для виведення карток -->
+          <!-- Контейнер для карток -->
           <div id="drinks-list" class="cards">
-            <!-- Картки генеруватимуться через JavaScript -->
+            <drink-card
+              v-for="drink in filteredDrinks"
+              :key="drink.id"
+              :name="drink.name"
+              :type="drink.type"
+              :time-minutes="drink.timeMinutes"
+              :alcohol="drink.alcohol"
+              :image="drink.image"
+            >
+            </drink-card>
           </div>
 
-          <!-- Форма додавання нового рецепта (Практична 8) -->
+          <!-- Форма додавання рецепта -->
           <div
             class="form-container"
             style="
-              margin-top: 30px;
+              margin-top: 40px;
               max-width: 500px;
               background: #fff;
               padding: 20px;
@@ -108,11 +99,9 @@
                   type="text"
                   id="recipe-name"
                   name="name"
-                  required
                   style="width: 100%; padding: 8px; margin-top: 4px"
                 />
               </div>
-
               <div style="margin-bottom: 10px">
                 <label for="recipe-type">Тип напою:</label><br />
                 <select
@@ -122,29 +111,23 @@
                 >
                   <option value="Гарячі напої">Гарячі напої</option>
                   <option value="Коктейлі">Коктейлі</option>
-                  <option value="Холодні напої">Холодні напої</option>
                 </select>
               </div>
-
               <div style="margin-bottom: 10px">
                 <label for="recipe-time">Час приготування (хв):</label><br />
                 <input
                   type="number"
                   id="recipe-time"
                   name="timeMinutes"
-                  min="1"
-                  required
                   style="width: 100%; padding: 8px; margin-top: 4px"
                 />
               </div>
-
               <div style="margin-bottom: 15px">
                 <label>
                   <input type="checkbox" id="recipe-alcohol" name="alcohol" />
                   Містить алкоголь
                 </label>
               </div>
-
               <button
                 type="submit"
                 style="
