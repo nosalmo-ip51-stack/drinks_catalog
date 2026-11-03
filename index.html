@@ -28,9 +28,52 @@
         </section>
 
         <section id="recipes">
-          <h2>Популярні рецепти</h2>
+          <h2>Популярні рецепти (API TheCocktailDB)</h2>
 
-          <!-- Чекбокс фільтрації (Друга подія варіанта 15) -->
+          <!-- Елементи для Практичної роботи №9 (API) -->
+          <button
+            id="refresh-btn"
+            style="
+              margin-bottom: 20px;
+              padding: 10px 20px;
+              background-color: #8b0000;
+              color: white;
+              border: none;
+              border-radius: 5px;
+              cursor: pointer;
+              font-size: 16px;
+            "
+          >
+            Оновити дані
+          </button>
+
+          <p
+            id="loading-indicator"
+            style="
+              display: none;
+              font-weight: bold;
+              color: #555;
+              margin-bottom: 15px;
+            "
+          >
+            ⏳ Завантаження даних з сервера...
+          </p>
+
+          <p
+            id="error-message"
+            style="
+              display: none;
+              color: #d8000c;
+              background-color: #ffd2d2;
+              padding: 15px;
+              border-radius: 5px;
+              border: 1px solid #d8000c;
+              margin-bottom: 15px;
+              font-weight: bold;
+            "
+          ></p>
+
+          <!-- Елементи з Практичної роботи №8 -->
           <div class="filter-container" style="margin-bottom: 15px">
             <label>
               <input type="checkbox" id="filter-non-alcoholic" /> Лише
@@ -40,14 +83,12 @@
 
           <p id="drinks-count">Кількість безалкогольних рецептів: 0</p>
 
+          <!-- Контейнер для виведення карток -->
           <div id="drinks-list" class="cards">
-            <article class="recipe-card static-placeholder">
-              <h3>Заглушка</h3>
-              <p>Цей текст має зникнути.</p>
-            </article>
+            <!-- Картки генеруватимуться через JavaScript -->
           </div>
 
-          <!-- Форма додавання нового рецепта (Варіант 15) -->
+          <!-- Форма додавання нового рецепта (Практична 8) -->
           <div
             class="form-container"
             style="

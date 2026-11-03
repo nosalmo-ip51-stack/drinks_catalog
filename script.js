@@ -1,173 +1,133 @@
-let recipes = [
-  {
-    name: "Латте Макіато",
-    alcohol: false,
-    timeMinutes: 15,
-    type: "Гарячі напої",
-    badgeClass: "badge-hot",
-    difficulty: "Середня",
-    description:
-      "Класичний кавовий напій на основі еспресо та ніжно збитої молочної пінки.",
-    image: "assets/img/latte.jpg",
-  },
-  {
-    name: "Глінтвейн класичний",
-    alcohol: true,
-    timeMinutes: 20,
-    type: "Гарячі напої",
-    badgeClass: "badge-hot",
-    difficulty: "Середня",
-    description: "Зігріваючий зимовий напій з прянощами для холодних вечорів.",
-    image: "assets/img/glintwein.jpg",
-  },
-  {
-    name: "Мохіто безалкогольний",
-    alcohol: false,
-    timeMinutes: 10,
-    type: "Коктейлі",
-    badgeClass: "badge-cocktail",
-    difficulty: "Легка",
-    description:
-      "Ідеальний літній коктейль із льодом, свіжою м'ятою та соком лайма.",
-    image: "assets/img/mojito.jpg",
-  },
-  {
-    name: "Експрес-чай з м'ятою",
-    alcohol: false,
-    timeMinutes: 3,
-    type: "Гарячі напої",
-    badgeClass: "badge-hot",
-    difficulty: "Легка",
-    description: "Швидкий і освіжаючий чай для бадьорості.",
-    image: "assets/img/tea.jpg",
-  },
-];
+// Практична робота №9. Варіант 15: Каталог рецептів напоїв (API)
+const API_URL =
+  "https://www.thecocktaildb.com/api/json/v1/1/search.php?s=margarita"; //[cite: 17]
 
+// Отримуємо посилання на елементи DOM
 const listContainer = document.querySelector("#drinks-list");
-const form = document.querySelector("#add-recipe-form");
-const timeInput = document.querySelector("#recipe-time");
-const filterCheckbox = document.querySelector("#filter-non-alcoholic");
+const refreshButton = document.querySelector("#refresh-btn");
+const errorContainer = document.querySelector("#error-message");
+const loadingIndicator = document.querySelector("#loading-indicator");
 
-// Видаляємо статичну заглушку
-const placeholder = document.querySelector(".static-placeholder");
-if (placeholder) {
-  placeholder.remove();
+// Крок 7. Функція управління станом завантаження
+function showLoading(isLoading) {
+  if (loadingIndicator) {
+    loadingIndicator.style.display = isLoading ? "block" : "none";
+  }
+  if (refreshButton) {
+    refreshButton.disabled = isLoading; // Блокуємо кнопку під час запиту
+  }
 }
 
-function renderDrinks(drinksToRender) {
-  listContainer.innerHTML = "";
-  let nonAlcoholicCount = 0;
+// Крок 8. Виведення повідомлення про помилку
+function showError(message) {
+  if (errorContainer) {
+    errorContainer.textContent = message;
+    errorContainer.style.display = "block";
+  }
+}
 
-  drinksToRender.forEach((drink) => {
+// Очищення повідомлення про помилку
+function clearError() {
+  if (errorContainer) {
+    errorContainer.textContent = "";
+    errorContainer.style.display = "none";
+  }
+}
+
+// Крок 6. Функція рендеру списку карток (адаптована під поля API TheCocktailDB)
+function renderDrinks(drinks) {
+  if (!listContainer) return;
+  listContainer.innerHTML = "";
+
+  drinks.forEach((drink) => {
     const card = document.createElement("article");
     card.classList.add("recipe-card");
-    card.dataset.time = drink.timeMinutes;
-
-    if (!drink.alcohol) {
-      card.classList.add("non-alcoholic");
-      nonAlcoholicCount++;
-    }
 
     const imgContainer = document.createElement("div");
     imgContainer.classList.add("card-image");
 
     const badge = document.createElement("span");
-    badge.classList.add("badge", drink.badgeClass || "badge-hot");
-    badge.textContent = drink.type;
+    badge.classList.add("badge", "badge-cocktail");
+    badge.textContent = "Коктейль";
 
+    // Беремо картинку з API
     const img = document.createElement("img");
-    img.setAttribute("src", drink.image || "assets/img/latte.jpg");
-    img.setAttribute("alt", drink.name);
+    img.setAttribute("src", drink.strDrinkThumb); //[cite: 17]
+    img.setAttribute("alt", drink.strDrink);
 
     imgContainer.append(badge, img);
 
     const contentContainer = document.createElement("div");
     contentContainer.classList.add("card-content");
 
+    // Беремо назву з API
     const title = document.createElement("h3");
-    title.textContent = drink.name;
-
-    const metaContainer = document.createElement("div");
-    metaContainer.classList.add("recipe-meta");
-
-    const timeSpan = document.createElement("span");
-    timeSpan.textContent = `⏱ ${drink.timeMinutes} хв`;
-
-    const diffSpan = document.createElement("span");
-    diffSpan.textContent = `⭐ ${drink.difficulty || "Легка"}`;
-
-    metaContainer.append(timeSpan, diffSpan);
+    title.textContent = drink.strDrink; //[cite: 17]
 
     const desc = document.createElement("p");
+    // Беремо інструкцію з API та обрізаємо її, щоб картки були акуратними
+    const instructions = drink.strInstructions || "Опис відсутній."; //[cite: 17]
     desc.textContent =
-      drink.description || "Свіжоприготований домашній рецепт.";
+      instructions.length > 150
+        ? instructions.substring(0, 150) + "..."
+        : instructions;
 
-    contentContainer.append(title, metaContainer, desc);
-
+    contentContainer.append(title, desc);
     card.append(imgContainer, contentContainer);
     listContainer.append(card);
   });
-
-  const countElement = document.querySelector("#drinks-count");
-  if (countElement) {
-    countElement.textContent = `Кількість безалкогольних рецептів: ${nonAlcoholicCount}`;
-  }
 }
 
-// Додаткова валідація часу приготування
-if (timeInput) {
-  timeInput.addEventListener("input", () => {
-    const val = Number(timeInput.value);
-    if (val <= 0) {
-      timeInput.setCustomValidity(
-        "Час приготування має бути більшим за 0 хвилин",
-      );
-    } else {
-      timeInput.setCustomValidity("");
+// Крок 2. Створення async-функції запиту
+async function loadData() {
+  clearError();
+  listContainer.innerHTML = "";
+
+  // Крок 7. Увімкнення видимої ознаки завантаження перед fetch
+  showLoading(true); //[cite: 14]
+
+  try {
+    // Крок 3. Виконати fetch і дочекатися відповіді
+    const response = await fetch(API_URL); //[cite: 13, 14]
+
+    // Крок 4. Перевірити HTTP-статус
+    if (!response.ok) {
+      throw new Error(`Сервер відповів кодом ${response.status}`); //[cite: 14]
     }
-  });
-}
 
-// Обробка форми без перезавантаження
-if (form) {
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
+    // Крок 5. Розібрати JSON
+    const data = await response.json(); //[cite: 14]
+    console.log("Отримані дані від API:", data); // Виводимо в консоль для перевірки
 
-    const nameValue = document.querySelector("#recipe-name").value.trim();
-    const typeValue = document.querySelector("#recipe-type").value;
-    const timeValue = Number(timeInput.value);
-    const alcoholChecked = document.querySelector("#recipe-alcohol").checked;
+    // Крок 6 (Особливість Варіанта 15): Перевірка на відсутність результатів
+    // Якщо коктейлів не знайдено, API повертає об'єкт, де drinks дорівнює null
+    if (!data.drinks) {
+      throw new Error("Рецептів за такою назвою не знайдено"); //[cite: 17]
+    }
 
-    const newRecipe = {
-      name: nameValue,
-      alcohol: alcoholChecked,
-      timeMinutes: timeValue,
-      type: typeValue,
-      badgeClass: typeValue === "Коктейлі" ? "badge-cocktail" : "badge-hot",
-      difficulty: "Легка",
-      description: "Новий рецепт, доданий користувачем через форму.",
-      image: "assets/img/latte.jpg",
-    };
+    // Вивести дані в DOM
+    renderDrinks(data.drinks);
+  } catch (error) {
+    // Крок 8. Обробити помилку та вивести повідомлення
+    console.error("Деталі помилки для розробника:", error); //[cite: 14]
 
-    recipes.push(newRecipe);
-    applyFilter();
-    form.reset();
-  });
-}
-
-// Фільтрація списку
-function applyFilter() {
-  if (filterCheckbox && filterCheckbox.checked) {
-    const filtered = recipes.filter((r) => !r.alcohol);
-    renderDrinks(filtered);
-  } else {
-    renderDrinks(recipes);
+    // Крок 9. Перевірка сценарію offline (відсутність з'єднання)
+    if (!navigator.onLine || error.message.includes("Failed to fetch")) {
+      showError("Не вдалося завантажити дані. Спробуйте пізніше."); //[cite: 14]
+    } else {
+      // Виведення специфічного тексту помилки (наприклад, коли нічого не знайдено)
+      showError(error.message);
+    }
+  } finally {
+    // Крок 7. Вимкнути ознаку завантаження незалежно від результату
+    showLoading(false); //[cite: 14]
   }
 }
 
-if (filterCheckbox) {
-  filterCheckbox.addEventListener("change", applyFilter);
+// Крок 10. Додати кнопку «Оновити»
+if (refreshButton) {
+  refreshButton.addEventListener("click", loadData); //[cite: 15]
 }
 
-// Початковий рендер сторінки
-renderDrinks(recipes);
+// Автоматичний запуск функції при завантаженні сторінки
+loadData();
